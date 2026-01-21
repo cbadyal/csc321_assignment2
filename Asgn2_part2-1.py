@@ -8,6 +8,7 @@ from Crypto.Random import get_random_bytes
 from Crypto.Util.Padding import unpad #just to check the result decryption
 import hashlib
 import random
+from . import math_utils
 
 
 
@@ -24,22 +25,21 @@ g = 'A4D1CBD5C3FD34126765A442EFB99905F8104DD258AC507FD6406CFF14266D31266FEA1E5C4
 g_int = int(g, 16)
 
 
-#generate private keys -- using randint up until q_int is way too much, are we supposed to handle differently??
-#XA = random.randint(1, q_int)
-#XB = random.randint(1, q_int)
-XA = 15
-XB = 12
+#generate private keys -- using randint up until q_int 
+XA = random.randint(1, q_int)
+XB = random.randint(1, q_int)
 
-YA = pow(g_int,XA) % q_int
-YB = pow(g_int,XB) % q_int
+
+YA = math_utils.mod_pow(g_int,XA,q_int)
+YB = math_utils.mod_pow(g_int,XB,q_int)
 
 #modify public keys -- set them equal to q
 YA_modified = q_int
 YB_modified = q_int
 
 #exchange public keys
-s_int = pow(YB,XA) % q_int
-s_prime_int = pow(YA,XB) % q_int
+s_int = math_utils.mod_pow(YB,XA,q_int)
+s_prime_int = math_utils.mod_pow(YA,XB,q_int)
 
 
 s = str(s_int).encode('utf-8')#should this be equal to 0 bc it's not for me
