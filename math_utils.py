@@ -1,6 +1,4 @@
 #util file 
-import random
-from math import gcd
 
 def mod_pow(base, exponent, modulus):
     result = 1

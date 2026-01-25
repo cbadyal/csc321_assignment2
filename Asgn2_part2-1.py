@@ -38,14 +38,11 @@ YA_modified = q_int
 YB_modified = q_int
 
 #exchange public keys
-s_int = math_utils.mod_pow(YB,XA,q_int)
-s_prime_int = math_utils.mod_pow(YA,XB,q_int)
+s_int = math_utils.mod_pow(YB_modified,XA,q_int)
+s_prime_int = math_utils.mod_pow(YA_modified,XB,q_int)
 
-
-s = str(s_int).encode('utf-8')#should this be equal to 0 bc it's not for me
+s = str(s_int).encode('utf-8')
 s_prime = str(s_prime_int).encode('utf-8')
-
-
 
 hash_object = hashlib.sha256(s).digest()#in bytes 
 key_a = hash_object[:16] #key a for CBC
@@ -65,7 +62,7 @@ message_a = "Hi Bob"
 message_b = "Hi Alice"
 
 #encrypt message from alice to bob
-# generate shared iv 
+# generate iv
 iv_a = get_random_bytes(16)
 iv_a_hex = ''.join([hex(x)[2:].zfill(2) for x in iv_a])
 cipher_enc = AES.new(key_a, AES.MODE_CBC, iv_a)
@@ -73,7 +70,6 @@ message_a_bytes = message_a.encode('utf-8')
 padded_message = pad(message_a_bytes)
 ciphertext_a = cipher_enc.encrypt(padded_message) #alice's message in bytes 
 c0 = ''.join([hex(x)[2:].zfill(2) for x in ciphertext_a])
-
 
 
 #Decrypt message using mallory's key (intercepted)

@@ -18,8 +18,9 @@ g_int = 5
 
 
 #generate private keys
-XA = 8
-XB = 15
+XA = XA = random.randint(1, q_int)
+XB = random.randint(1, q_int)
+
 
 YA = pow(g_int,XA) % q_int
 YB = pow(g_int,XB) % q_int
