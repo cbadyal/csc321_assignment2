@@ -66,9 +66,9 @@ message_b = "Hi Alice"
 
 #encrypt message from alice to bob
 # generate shared iv 
-iv = get_random_bytes(16)
-iv_hex = ''.join([hex(x)[2:].zfill(2) for x in iv])
-cipher_enc = AES.new(key_a, AES.MODE_CBC, iv)
+iv_a = get_random_bytes(16)
+iv_a_hex = ''.join([hex(x)[2:].zfill(2) for x in iv_a])
+cipher_enc = AES.new(key_a, AES.MODE_CBC, iv_a)
 message_a_bytes = message_a.encode('utf-8')
 padded_message = pad(message_a_bytes)
 ciphertext_a = cipher_enc.encrypt(padded_message) #alice's message in bytes 
@@ -77,12 +77,12 @@ c0 = ''.join([hex(x)[2:].zfill(2) for x in ciphertext_a])
 
 
 #Decrypt message using mallory's key (intercepted)
-cipher_dec = AES.new(key_m, AES.MODE_CBC, iv)
+cipher_dec = AES.new(key_m, AES.MODE_CBC, iv_a)
 decrypted_message_a_intercept = unpad(cipher_dec.decrypt(ciphertext_a), 16, style="pkcs7")
 decrypted_message_a_intercept = decrypted_message_a_intercept.decode('utf-8')
 
-#Bob receives c0 and iv 
-cipher_dec = AES.new(key_b, AES.MODE_CBC, iv)
+#Bob receives c0 and iv from alice
+cipher_dec = AES.new(key_b, AES.MODE_CBC, iv_a)
 decrypted_message_a = unpad(cipher_dec.decrypt(ciphertext_a), 16, style="pkcs7")
 decrypted_message_a = decrypted_message_a.decode('utf-8')
 
@@ -91,20 +91,22 @@ decrypted_message_a = decrypted_message_a.decode('utf-8')
 message_b = "Hi Alice"
 
 #encrypt message from Bob
-cipher_enc = AES.new(key_b, AES.MODE_CBC, iv)
+iv_b = get_random_bytes(16)
+iv_b_hex = ''.join([hex(x)[2:].zfill(2) for x in iv_b])
+cipher_enc = AES.new(key_b, AES.MODE_CBC, iv_b)
 message_b_bytes = message_b.encode('utf-8')
 padded_message = pad(message_b_bytes)
 ciphertext_b = cipher_enc.encrypt(padded_message) #bob's message in bytes 
 c1 = ''.join([hex(x)[2:].zfill(2) for x in ciphertext_a])
 
 #receive encrypted message (intercepted)
-cipher_dec = AES.new(key_m, AES.MODE_CBC, iv)
+cipher_dec = AES.new(key_m, AES.MODE_CBC, iv_b)
 decrypted_message_b_intercept = unpad(cipher_dec.decrypt(ciphertext_b), 16, style="pkcs7")
 decrypted_message_b_intercept = decrypted_message_b_intercept.decode('utf-8')
 
-#Alice receives iv and c1
+#Alice receives iv_b and c1
 #Alice decrypts message 
-cipher_dec = AES.new(key_a, AES.MODE_CBC, iv)
+cipher_dec = AES.new(key_a, AES.MODE_CBC, iv_b)
 decrypted_message_b = unpad(cipher_dec.decrypt(ciphertext_b), 16, style="pkcs7")
 decrypted_message_b = decrypted_message_b.decode('utf-8')
 
@@ -141,7 +143,7 @@ print("All parties have the same key:", s==s_prime)#should we be calculating a s
 print()
 print("Alice's message:", message_a)
 print()
-print("Alice's IV:", iv_hex)
+print("Alice's IV:", iv_a_hex)
 print()
 print("Alice's ciphertext:", c0)
 print()
@@ -149,7 +151,7 @@ print("Mallory decrypts c0:", decrypted_message_a_intercept)
 print()
 print("Bob's message:", message_b)
 print()
-print("Bob's IV:", iv_hex)
+print("Bob's IV:", iv_b_hex)
 print()
 print("Bob's ciphertext:", c1)
 print()
