@@ -36,7 +36,6 @@ def RSA_encrypt_int(PU, m_int):
 
 #alice encrypts a symmetric key as c = mod_pow(s(integer), e, n)
 #mallory modifies c to become c * mod_pow(r(integer), e, n)
-
 s = random.randint(1, n-1) #choosing a random int as our key and encrypting it (should we just use any int?)
 c = RSA_encrypt_int(PU, s) #s^e mod n
 
@@ -77,20 +76,9 @@ padded = pad(message_bytes)
 ciphertext = cipher.encrypt(padded)
 c0 = ciphertext #this is the message encrypted
 
-#aes cbc decryption (with parameters for key, since it changes)
+
 #the altered key from method 2 is a multiple of the original key
 #method 1 reveals the original key to mallory, so s would stay the same 
-def aes_cbc_decrypt(s, iv, ciphertext):
-   #deriving aes key from s
-   s_bytes = str(s).encode("utf-8")
-   key = hashlib.sha256(s_bytes).digest()[:16]
-   cipher = AES.new(key, AES.MODE_CBC, iv)
-   plaintext_padded = cipher.decrypt(ciphertext)
-   plaintext = unpad(plaintext_padded, 16, style="pkcs7")
-   return plaintext.decode("utf-8")
-
-
-
 #for method 1, if bob wants to decrypt he uses s_prime which is s * r (wrong), he unknowingly decrypts to a multiple of s
 #because it was a multiple of s, the key padding is off
 
