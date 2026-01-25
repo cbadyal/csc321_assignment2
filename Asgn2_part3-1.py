@@ -9,5 +9,8 @@ e = 65537
 
 n = p * q
 phi = (p-1)(q-1)
+d = math_utils.mod_inverse(e, phi)
 
+#Public Key: (n, e)
+#Private Key: (n, d)
 
