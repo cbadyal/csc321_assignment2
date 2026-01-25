@@ -1,4 +1,4 @@
-#assignment 2 part 2
+#assignment 2 part 1
 #replace YA and YB with q
 #Demonstrate how mallory can determine shared secret s 
 #show mallory can decrypt c0 and c1
@@ -8,7 +8,7 @@ from Crypto.Random import get_random_bytes
 from Crypto.Util.Padding import unpad #just to check the result decryption
 import hashlib
 import random
-from . import math_utils
+import math_utils
 
 
 
