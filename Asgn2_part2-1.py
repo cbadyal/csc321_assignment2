@@ -93,7 +93,7 @@ cipher_enc = AES.new(key_b, AES.MODE_CBC, iv_b)
 message_b_bytes = message_b.encode('utf-8')
 padded_message = pad(message_b_bytes)
 ciphertext_b = cipher_enc.encrypt(padded_message) #bob's message in bytes 
-c1 = ''.join([hex(x)[2:].zfill(2) for x in ciphertext_a])
+c1 = ''.join([hex(x)[2:].zfill(2) for x in ciphertext_b])
 
 #receive encrypted message (intercepted)
 cipher_dec = AES.new(key_m, AES.MODE_CBC, iv_b)
