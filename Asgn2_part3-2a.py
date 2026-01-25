@@ -5,7 +5,7 @@ from Crypto.Random import get_random_bytes
 from . import math_utils
 import random
 import hashlib
-from Crypto.Util.Padding import unpad
+
 
 #generate p, q (primes)
 p = number.getPrime(2048)
@@ -33,25 +33,6 @@ def RSA_encrypt_int(PU, m_int):
         return
     return pow(m_int, e, n)
 
-def RSA_decrypt_int(PR, c):
-    n, d = PR
-    return math_utils.mod_pow(c, d, n)
-
-def RSA_encrypt(PU, msg):#takes in the public and private keys and encrypts
-  n = PU[0]
-  e = PU[1]
-
-  msg_int = math_utils.ascii_to_int(msg)#integer we are encrypting
-  if (msg_int > n):
-    print("Error: integer message is too long")
-    return
-  c = math_utils.mod_pow(msg_int, e, n)
-  return c
-def RSA_decrypt(PR, c):
-  n = PR[0]
-  d = PR[1]
-  msg_dec = math_utils.mod_pow(c, d, n)
-  return msg_dec
 
 #alice encrypts a symmetric key as c = mod_pow(s(integer), e, n)
 #mallory modifies c to become c * mod_pow(r(integer), e, n)
@@ -78,8 +59,6 @@ s_prime_c_alt = math_utils.mod_pow(c_alt, d, n)
 #mallory recovers s using s_prime
 r_inv = math_utils.mod_inverse(r, n)
 s_from_prime = (s_prime_c_prime * r_inv) % n
-print(s_from_prime == s)
-print(s_prime_c_alt == (s * 2) % n)
 
 
 #use k=SHA256(s) to decrypt AES-CBC encrypted m
@@ -112,16 +91,8 @@ def aes_cbc_decrypt(s, iv, ciphertext):
 
 
 
-#for method 1, bob uses s_prime which is s * r (wrong), he unknowingly decrypted to a multiple of s
+#for method 1, if bob wants to decrypt he uses s_prime which is s * r (wrong), he unknowingly decrypts to a multiple of s
 #because it was a multiple of s, the key padding is off
-
-'''demonstrating that bob decrypting using the modified key wouldn't work
-try:
-  bob_m = aes_cbc_decrypt(s_prime_c_prime, iv, c0)
-  print("Bob decrypted message:", bob_m)
-except:
-   print("Bob's decryption failed due to wrong key")
-'''
 
 #printing output
 print("Demonstrating RSA Encryption Malleability")
